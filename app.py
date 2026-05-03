@@ -171,6 +171,10 @@ else:
                 # Printable DMC Section
                 st.markdown("""
                     <style>
+                    /* Global Streamlit Table Centering */
+                    [data-testid="stTable"] th, [data-testid="stTable"] td {
+                        text-align: center !important;
+                    }
                     @media print {
                         @page {
                             size: A4;
@@ -213,12 +217,13 @@ else:
                         .dmc-header h2 { font-size: 16px; margin: 2px 0 !important; }
                         .dmc-header h3 { font-size: 14px; margin: 2px 0 !important; }
                         .dmc-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 4px 8px !important; text-align: left; color: black !important; }
+                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 4px 8px !important; text-align: center; color: black !important; }
                         .dmc-footer { margin-top: 30px; display: flex; justify-content: space-between; }
                     }
                     .print-only { display: none; }
                     </style>
                 """, unsafe_allow_html=True)
+
 
 
 
