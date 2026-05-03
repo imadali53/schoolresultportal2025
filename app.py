@@ -174,33 +174,40 @@ else:
                     @media print {
                         @page {
                             size: A4;
-                            margin: 0.5cm;
+                            margin: 1cm;
                         }
-                        /* Hide everything and collapse its space */
+                        /* Hide Streamlit elements that take up space at the top */
+                        header, footer, [data-testid="stHeader"], [data-testid="stSidebar"], [data-testid="stToolbar"] {
+                            display: none !important;
+                        }
+                        /* Reset the main container padding */
+                        .main .block-container {
+                            padding-top: 0 !important;
+                            margin-top: 0 !important;
+                        }
+                        /* Hide everything else */
                         body * {
                             visibility: hidden;
-                            height: 0 !important;
-                            margin: 0 !important;
-                            padding: 0 !important;
                         }
-                        /* Show only the DMC card and its contents */
+                        /* Show only the DMC card and force it to the top */
                         .print-only, .print-only * {
                             visibility: visible;
-                            height: auto !important;
                         }
                         .print-only {
                             display: block !important;
-                            position: absolute;
+                            position: fixed;
                             left: 0;
                             top: 0;
                             width: 100%;
                             border: 1px solid black;
-                            padding: 15px !important;
+                            padding: 20px !important;
                             margin: 0 !important;
+                            background: white !important;
+                            z-index: 9999;
                         }
                         /* Reset some basic print styles */
-                        body { background: white !important; }
-                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; background: white !important; font-size: 12px; }
+                        body { background: white !important; margin: 0 !important; padding: 0 !important; }
+                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; font-size: 12px; }
                         .dmc-header { text-align: center; border-bottom: 1px solid black; margin-bottom: 10px; }
                         .dmc-header h1 { font-size: 18px; margin: 2px 0 !important; }
                         .dmc-header h2 { font-size: 16px; margin: 2px 0 !important; }
@@ -212,6 +219,7 @@ else:
                     .print-only { display: none; }
                     </style>
                 """, unsafe_allow_html=True)
+
 
 
 
