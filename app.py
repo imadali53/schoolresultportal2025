@@ -172,10 +172,25 @@ else:
                 st.markdown("""
                     <style>
                     @media print {
-                        #root > div:nth-child(1) > div > div > div > div > section > div { display: none !important; }
-                        .no-print { display: none !important; }
-                        .print-only { display: block !important; }
-                        body { background: white !important; color: black !important; }
+                        /* Hide everything in the body */
+                        body * {
+                            visibility: hidden;
+                        }
+                        /* Show only the DMC card and its contents */
+                        .print-only, .print-only * {
+                            visibility: visible;
+                        }
+                        .print-only {
+                            display: block !important;
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            width: 100%;
+                            padding: 0;
+                            margin: 0;
+                        }
+                        /* Reset some basic print styles */
+                        body { background: white !important; }
                         .dmc-card { border: 2px solid black; padding: 20px; font-family: 'Times New Roman', serif; color: black !important; background: white !important; }
                         .dmc-header { text-align: center; border-bottom: 2px solid black; margin-bottom: 20px; }
                         .dmc-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -232,8 +247,6 @@ else:
                 """
                 st.markdown(dmc_html, unsafe_allow_html=True)
                 
-                st.info("Tip: Click 'Print DMC' to save as PDF or Print. Ensure 'Background Graphics' is checked in print settings.")
-                st.info("Tip: Click the button below to Print/Save as PDF. Ensure 'Background Graphics' is checked in your browser's print settings.")
                 st.components.v1.html("""
                     <button onclick="window.parent.print()" style="
                         background-color: #4f46e5;
@@ -252,6 +265,7 @@ else:
                         font-weight: 600;
                     ">Print DMC Certificate</button>
                 """, height=70)
+
 
 
 
