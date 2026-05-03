@@ -243,7 +243,7 @@ else:
                         <h2>Annual Examination Result 2025</h2>
                         <h3>Detailed Marks Certificate</h3>
                     </div>
-                    <div style="margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
                         <p><strong>Name:</strong> {result.get('Name', '-')}</p>
                         <p><strong>Father Name:</strong> {result.get('Father Name', '-')}</p>
                         <p><strong>Roll Number:</strong> {result.get('Roll Number', '-')}</p>
