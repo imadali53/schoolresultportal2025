@@ -117,12 +117,21 @@ else:
                 
                 # Student Details Card
                 st.subheader("Student Details")
-                st.write(f"**Name:** {result.get('Name', '-')}")
-                st.write(f"**Father Name:** {result.get('Father Name', '-')}")
-                st.write(f"**Roll No:** {result.get('Roll Number', '-')}")
-                st.write(f"**Admission No:** {result.get('Admission Number', '-')}")
-                if result.get('Date of Birth'):
-                    st.write(f"**Date of Birth:** {result.get('Date of Birth')}")
+                
+                row1_col1, row1_col2, row1_col3 = st.columns(3)
+                with row1_col1:
+                    st.write(f"**Name:** {result.get('Name', '-')}")
+                with row1_col2:
+                    st.write(f"**Father Name:** {result.get('Father Name', '-')}")
+                with row1_col3:
+                    st.write(f"**Roll No:** {result.get('Roll Number', '-')}")
+                
+                row2_col1, row2_col2 = st.columns(2)
+                with row2_col1:
+                    st.write(f"**Admission No:** {result.get('Admission Number', '-')}")
+                with row2_col2:
+                    if result.get('Date of Birth'):
+                        st.write(f"**Date of Birth:** {result.get('Date of Birth')}")
                 
                 # Subjects Table
                 st.subheader("Marks Summary")
