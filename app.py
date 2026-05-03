@@ -243,17 +243,13 @@ else:
                         <h2>Annual Examination Result 2025</h2>
                         <h3>Detailed Marks Certificate</h3>
                     </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <div>
-                            <p><strong>Name:</strong> {result.get('Name', '-')}</p>
-                            <p><strong>Father Name:</strong> {result.get('Father Name', '-')}</p>
-                            <p><strong>Roll Number:</strong> {result.get('Roll Number', '-')}</p>
-                        </div>
-                        <div>
-                            <p><strong>Class:</strong> {selected_class} {selected_section}</p>
-                            <p><strong>Admission No:</strong> {result.get('Admission Number', '-')}</p>
-                            <p><strong>Date of Birth:</strong> {result.get('Date of Birth', '-')}</p>
-                        </div>
+                    <div style="margin-bottom: 20px;">
+                        <p><strong>Name:</strong> {result.get('Name', '-')}</p>
+                        <p><strong>Father Name:</strong> {result.get('Father Name', '-')}</p>
+                        <p><strong>Roll Number:</strong> {result.get('Roll Number', '-')}</p>
+                        <p><strong>Class:</strong> {selected_class} {selected_section}</p>
+                        <p><strong>Admission No:</strong> {result.get('Admission Number', '-')}</p>
+                        <p><strong>Date of Birth:</strong> {result.get('Date of Birth', '-')}</p>
                     </div>
                     <table class="dmc-table">
                         <thead>
