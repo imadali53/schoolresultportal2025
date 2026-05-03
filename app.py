@@ -5,7 +5,151 @@ import glob
 import base64
 from math import isnan
 
-st.set_page_config(page_title="School Results Portal", layout="centered")
+st.set_page_config(page_title="GHSS Adina Results 2025", layout="centered")
+
+st.markdown("""
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Global Reset ── */
+html, body, [class*="css"] {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+/* ── Animated Gradient Background ── */
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background-size: 400% 400%;
+    animation: gradientBG 12s ease infinite;
+    min-height: 100vh;
+}
+@keyframes gradientBG {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ── Hide top Streamlit bar ── */
+[data-testid="stHeader"] { background: transparent !important; }
+[data-testid="stToolbar"] { display: none !important; }
+
+/* ── Title ── */
+h1 {
+    font-size: 2.4rem !important;
+    font-weight: 800 !important;
+    background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 4px !important;
+    animation: fadeInDown 0.8s ease;
+}
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+p, label, div {
+    color: #e2e8f0 !important;
+}
+
+/* ── Glass Card for main block ── */
+[data-testid="stMain"] .block-container {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 2rem 2.5rem !important;
+    margin-top: 2rem;
+    animation: fadeIn 0.6s ease;
+    max-width: 860px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Selectbox & Input ── */
+[data-testid="stSelectbox"] > div, [data-testid="stNumberInput"] > div {
+    background: rgba(255,255,255,0.08) !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    color: white !important;
+}
+[data-testid="stSelectbox"] label, [data-testid="stNumberInput"] label {
+    color: #a78bfa !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+}
+
+/* ── Buttons ── */
+[data-testid="stButton"] > button, [data-testid="stDownloadButton"] > button {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 0.6rem 1.5rem !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.4) !important;
+}
+[data-testid="stButton"] > button:hover, [data-testid="stDownloadButton"] > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 28px rgba(124,58,237,0.6) !important;
+}
+
+/* ── Subheaders ── */
+h2, h3 {
+    color: #a78bfa !important;
+    font-weight: 700 !important;
+    border-bottom: 1px solid rgba(167,139,250,0.3);
+    padding-bottom: 4px;
+    margin-top: 1.2rem !important;
+}
+
+/* ── Table ── */
+[data-testid="stTable"] {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+[data-testid="stTable"] th {
+    background: rgba(124,58,237,0.5) !important;
+    color: white !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+}
+[data-testid="stTable"] td {
+    background: rgba(255,255,255,0.04) !important;
+    color: #e2e8f0 !important;
+    text-align: center !important;
+}
+
+/* ── Metrics ── */
+[data-testid="metric-container"] {
+    background: rgba(255,255,255,0.07) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    text-align: center;
+}
+[data-testid="stMetricLabel"] { color: #94a3b8 !important; font-size: 0.8rem !important; }
+[data-testid="stMetricValue"] { color: white !important; font-size: 1.4rem !important; font-weight: 700 !important; }
+
+/* ── Success / Error banners ── */
+[data-testid="stAlert"] {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+}
+
+/* ── Caption ── */
+[data-testid="stCaptionContainer"] p {
+    color: #94a3b8 !important;
+    text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
