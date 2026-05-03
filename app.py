@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import glob
+import base64
 from math import isnan
 
 st.set_page_config(page_title="School Results Portal", layout="centered")
@@ -246,13 +247,24 @@ else:
                 # Store in session state so the print button can access it
                 st.session_state['dmc_html'] = popup_html
 
-                if st.button("🖨️ Print DMC Certificate", type="primary"):
-                    escaped = st.session_state['dmc_html'].replace("\\", "\\\\").replace("`", "\\`").replace("$", "\\$")
-                    st.components.v1.html(f"""
-                        <script>
-                            var w = window.open('', '_blank', 'width=900,height=700');
-                            w.document.write(`{escaped}`);
-                            w.document.close();
-                        </script>
-                    """, height=0)
+                # Encode DMC as base64 data URI and open in new tab - bypasses all iframe sandbox issues
+                b64 = base64.b64encode(popup_html.encode()).decode()
+                data_uri = f"data:text/html;base64,{b64}"
+
+                st.components.v1.html(f"""
+                    <a href="{data_uri}" target="_blank" style="
+                        display: block;
+                        background-color: #4f46e5;
+                        color: white;
+                        padding: 12px 24px;
+                        text-align: center;
+                        font-size: 16px;
+                        border-radius: 8px;
+                        text-decoration: none;
+                        font-family: sans-serif;
+                        font-weight: 600;
+                        margin-top: 8px;
+                    ">🖨️ Open & Print DMC Certificate</a>
+                """, height=60)
+
 
