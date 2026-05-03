@@ -141,6 +141,15 @@ else:
                 st.subheader("Overall Result")
                 m1, m2, m3, m4 = st.columns(4)
                 
+                is_pass = str(result.get("Remarks", "")).lower() == "pass"
+
+                if is_pass:
+                    st.balloons()
+                    st.success("Congratulations! You have passed. 🎓")
+                else:
+                    st.snow()
+                    st.error("Keep trying! Success is just around the corner. 📚")
+
                 with m1:
                     st.metric("Total Marks", result.get("Obtained Marks", "-"))
                 with m2:
@@ -161,4 +170,71 @@ else:
                 with m4:
                     st.metric("Position", result.get("Position", "-"))
 
-                st.info("Tip: You can press Ctrl+P (or Cmd+P) to print this page.")
+                # Printable DMC Section
+                st.markdown("""
+                    <style>
+                    @media print {
+                        #root > div:nth-child(1) > div > div > div > div > section > div { display: none !important; }
+                        .no-print { display: none !important; }
+                        .print-only { display: block !important; }
+                        body { background: white !important; color: black !important; }
+                        .dmc-card { border: 2px solid black; padding: 20px; font-family: 'Times New Roman', serif; color: black !important; background: white !important; }
+                        .dmc-header { text-align: center; border-bottom: 2px solid black; margin-bottom: 20px; }
+                        .dmc-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 8px; text-align: left; color: black !important; }
+                        .dmc-footer { margin-top: 50px; display: flex; justify-content: space-between; }
+                    }
+                    .print-only { display: none; }
+                    </style>
+                """, unsafe_allow_html=True)
+
+                # Generate Subject Rows for Print
+                subject_rows = ""
+                for s in subjects_data:
+                    subject_rows += f"<tr><td>{s['Subject']}</td><td>{s['Marks']}</td></tr>"
+
+                dmc_html = f"""
+                <div class="print-only dmc-card">
+                    <div class="dmc-header">
+                        <h1>GHSS Adina</h1>
+                        <h2>Annual Examination Result 2025</h2>
+                        <h3>Detailed Marks Certificate</h3>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <p><strong>Name:</strong> {result.get('Name', '-')}</p>
+                            <p><strong>Father Name:</strong> {result.get('Father Name', '-')}</p>
+                            <p><strong>Roll Number:</strong> {result.get('Roll Number', '-')}</p>
+                        </div>
+                        <div>
+                            <p><strong>Class:</strong> {selected_class} {selected_section}</p>
+                            <p><strong>Admission No:</strong> {result.get('Admission Number', '-')}</p>
+                            <p><strong>Date of Birth:</strong> {result.get('Date of Birth', '-')}</p>
+                        </div>
+                    </div>
+                    <table class="dmc-table">
+                        <thead>
+                            <tr><th>Subject</th><th>Marks Obtained</th></tr>
+                        </thead>
+                        <tbody>
+                            {subject_rows}
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 20px; border: 1px solid black; padding: 10px;">
+                        <p><strong>Total Marks:</strong> {result.get('Obtained Marks', '-')}</p>
+                        <p><strong>Percentage:</strong> {pct_str}</p>
+                        <p><strong>Remarks:</strong> {result.get('Remarks', '-')}</p>
+                        <p><strong>Position:</strong> {result.get('Position', '-')}</p>
+                    </div>
+                    <div class="dmc-footer">
+                        <div style="text-align: center;"><p>_______________________</p><p>Principal Signature</p></div>
+                        <div style="text-align: center;"><p>_______________________</p><p>Controller of Exam</p></div>
+                    </div>
+                </div>
+                """
+                st.markdown(dmc_html, unsafe_allow_html=True)
+                
+                st.info("Tip: Click 'Print DMC' to save as PDF or Print. Ensure 'Background Graphics' is checked in print settings.")
+                if st.button("Print DMC"):
+                    st.components.v1.html("<script>window.print();</script>", height=0)
+
