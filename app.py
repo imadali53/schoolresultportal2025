@@ -191,7 +191,7 @@ else:
                 for s in subjects_data:
                     subject_rows += f"<tr><td>{s['Subject']}</td><td>{s['Marks']}</td></tr>"
 
-                dmc_html = f\"\"\"
+                dmc_html = f"""
                 <div class="print-only dmc-card">
                     <div class="dmc-header">
                         <h1>GHSS Adina</h1>
@@ -229,7 +229,7 @@ else:
                         <div style="text-align: center;"><p>_______________________</p><p>Controller of Exam</p></div>
                     </div>
                 </div>
-                \"\"\"
+                """
                 st.markdown(dmc_html, unsafe_allow_html=True)
                 
                 st.info("Tip: Click 'Print DMC' to save as PDF or Print. Ensure 'Background Graphics' is checked in print settings.")
