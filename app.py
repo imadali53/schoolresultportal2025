@@ -134,8 +134,11 @@ else:
                         subjects_data.append({"Subject": k, "Marks": v})
                 
                 if subjects_data:
-                    # Hide the pandas index when displaying the table
-                    st.table(pd.DataFrame(subjects_data).set_index('Subject'))
+                    # Center the table by putting it in a middle column to make it less wide
+                    _, mid_col, _ = st.columns([1, 2, 1])
+                    with mid_col:
+                        # Hide the pandas index when displaying the table
+                        st.table(pd.DataFrame(subjects_data).set_index('Subject'))
                 
                 # Result Metrics
                 st.subheader("Overall Result")
@@ -216,7 +219,7 @@ else:
                         .dmc-header h1 { font-size: 18px; margin: 2px 0 !important; }
                         .dmc-header h2 { font-size: 16px; margin: 2px 0 !important; }
                         .dmc-header h3 { font-size: 14px; margin: 2px 0 !important; }
-                        .dmc-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        .dmc-table { width: 70%; border-collapse: collapse; margin: 20px auto; }
                         .dmc-table th, .dmc-table td { border: 1px solid black; padding: 4px 8px !important; text-align: center; color: black !important; }
                         .dmc-footer { margin-top: 30px; display: flex; justify-content: space-between; }
                     }
