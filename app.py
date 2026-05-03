@@ -66,6 +66,8 @@ def load_result(cls, sec, roll_no):
                 clean_dict[k] = ""
             elif hasattr(v, 'strftime'):
                 clean_dict[k] = v.strftime('%d/%m/%Y')
+            elif isinstance(v, (int, float)) and v == int(v):
+                clean_dict[k] = int(v)
             else:
                 clean_dict[k] = v
 
