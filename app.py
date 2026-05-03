@@ -192,37 +192,30 @@ else:
                             size: A4;
                             margin: 1cm;
                         }
-                        /* Hide Streamlit elements, iframes, and buttons */
-                        header, footer, [data-testid="stHeader"], [data-testid="stSidebar"], [data-testid="stToolbar"], iframe, button {
+                        /* Hide everything by default */
+                        * {
                             display: none !important;
                         }
-                        /* Reset the main container padding */
-                        .main .block-container {
+                        /* Show only the DMC and its necessary ancestors */
+                        html, body, #root, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], .block-container, .print-only, .print-only * {
+                            display: block !important;
+                        }
+                        /* Reset all layout spacing for the visible ancestors */
+                        #root, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], .block-container {
                             padding: 0 !important;
                             margin: 0 !important;
+                            height: auto !important;
+                            width: 100% !important;
                         }
-                        /* Hide everything else */
-                        body * {
-                            visibility: hidden;
-                        }
-                        /* Show only the DMC card and force it to the top */
-                        .print-only, .print-only * {
-                            visibility: visible;
-                        }
+                        /* Style the DMC Card */
                         .print-only {
-                            display: block !important;
-                            position: absolute; /* Changed from fixed to absolute to avoid duplication */
-                            left: 0;
-                            top: 0 !important;
-                            width: 100%;
                             border: 1px solid black;
                             padding: 20px !important;
                             margin: 0 !important;
                             background: white !important;
-                            z-index: 9999;
                         }
                         /* Reset some basic print styles */
-                        body { background: white !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+                        body { background: white !important; margin: 0 !important; padding: 0 !important; }
                         .dmc-card { font-family: 'Times New Roman', serif; color: black !important; font-size: 12px; }
                         .dmc-header { text-align: center; border-bottom: 1px solid black; margin-bottom: 10px; }
                         .dmc-header h1 { font-size: 18px; margin: 2px 0 !important; }
