@@ -172,13 +172,21 @@ else:
                 st.markdown("""
                     <style>
                     @media print {
-                        /* Hide everything in the body */
+                        @page {
+                            size: A4;
+                            margin: 1cm;
+                        }
+                        /* Hide everything and collapse its space */
                         body * {
                             visibility: hidden;
+                            height: 0 !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
                         }
                         /* Show only the DMC card and its contents */
                         .print-only, .print-only * {
                             visibility: visible;
+                            height: auto !important;
                         }
                         .print-only {
                             display: block !important;
@@ -186,20 +194,23 @@ else:
                             left: 0;
                             top: 0;
                             width: 100%;
-                            padding: 0;
-                            margin: 0;
+                            border: 2px solid black;
+                            padding: 20px !important;
+                            margin: 0 !important;
                         }
                         /* Reset some basic print styles */
                         body { background: white !important; }
-                        .dmc-card { border: 2px solid black; padding: 20px; font-family: 'Times New Roman', serif; color: black !important; background: white !important; }
+                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; background: white !important; }
                         .dmc-header { text-align: center; border-bottom: 2px solid black; margin-bottom: 20px; }
+                        .dmc-header h1, .dmc-header h2, .dmc-header h3 { margin: 5px 0 !important; }
                         .dmc-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 8px; text-align: left; color: black !important; }
+                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 8px !important; text-align: left; color: black !important; }
                         .dmc-footer { margin-top: 50px; display: flex; justify-content: space-between; }
                     }
                     .print-only { display: none; }
                     </style>
                 """, unsafe_allow_html=True)
+
 
                 # Generate Subject Rows for Print
                 subject_rows = ""
