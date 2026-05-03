@@ -190,33 +190,28 @@ else:
                     @media print {
                         @page {
                             size: A4;
-                            margin: 1cm;
+                            margin: 0;
                         }
-                        /* Hide everything by default */
-                        * {
-                            display: none !important;
-                        }
-                        /* Show only the DMC and its necessary ancestors */
-                        html, body, #root, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], .block-container, .print-only, .print-only * {
-                            display: block !important;
-                        }
-                        /* Reset all layout spacing for the visible ancestors */
-                        #root, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], .block-container {
-                            padding: 0 !important;
-                            margin: 0 !important;
-                            height: auto !important;
-                            width: 100% !important;
-                        }
-                        /* Style the DMC Card */
+                        /* Use a full-page fixed overlay for the DMC */
                         .print-only {
-                            border: 1px solid black;
-                            padding: 20px !important;
-                            margin: 0 !important;
+                            display: block !important;
+                            visibility: visible !important;
+                            position: fixed !important;
+                            top: 0 !important;
+                            left: 0 !important;
+                            width: 100vw !important;
+                            height: 100vh !important;
                             background: white !important;
+                            z-index: 9999999 !important;
+                            margin: 0 !important;
+                            padding: 1.5cm !important;
+                            box-sizing: border-box !important;
                         }
-                        /* Reset some basic print styles */
-                        body { background: white !important; margin: 0 !important; padding: 0 !important; }
-                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; font-size: 12px; }
+                        .print-only * {
+                            visibility: visible !important;
+                        }
+                        /* Reset basic print styles inside the overlay */
+                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; font-size: 12px; border: 1px solid black; padding: 20px; }
                         .dmc-header { text-align: center; border-bottom: 1px solid black; margin-bottom: 10px; }
                         .dmc-header h1 { font-size: 18px; margin: 2px 0 !important; }
                         .dmc-header h2 { font-size: 16px; margin: 2px 0 !important; }
