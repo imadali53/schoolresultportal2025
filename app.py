@@ -192,14 +192,14 @@ else:
                             size: A4;
                             margin: 1cm;
                         }
-                        /* Hide Streamlit elements that take up space at the top */
-                        header, footer, [data-testid="stHeader"], [data-testid="stSidebar"], [data-testid="stToolbar"] {
+                        /* Hide Streamlit elements, iframes, and buttons */
+                        header, footer, [data-testid="stHeader"], [data-testid="stSidebar"], [data-testid="stToolbar"], iframe, button {
                             display: none !important;
                         }
                         /* Reset the main container padding */
                         .main .block-container {
-                            padding-top: 0 !important;
-                            margin-top: 0 !important;
+                            padding: 0 !important;
+                            margin: 0 !important;
                         }
                         /* Hide everything else */
                         body * {
@@ -211,9 +211,9 @@ else:
                         }
                         .print-only {
                             display: block !important;
-                            position: fixed;
+                            position: absolute; /* Changed from fixed to absolute to avoid duplication */
                             left: 0;
-                            top: 0;
+                            top: 0 !important;
                             width: 100%;
                             border: 1px solid black;
                             padding: 20px !important;
@@ -222,7 +222,7 @@ else:
                             z-index: 9999;
                         }
                         /* Reset some basic print styles */
-                        body { background: white !important; margin: 0 !important; padding: 0 !important; }
+                        body { background: white !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
                         .dmc-card { font-family: 'Times New Roman', serif; color: black !important; font-size: 12px; }
                         .dmc-header { text-align: center; border-bottom: 1px solid black; margin-bottom: 10px; }
                         .dmc-header h1 { font-size: 18px; margin: 2px 0 !important; }
