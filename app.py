@@ -174,7 +174,7 @@ else:
                     @media print {
                         @page {
                             size: A4;
-                            margin: 1cm;
+                            margin: 0.5cm;
                         }
                         /* Hide everything and collapse its space */
                         body * {
@@ -194,22 +194,25 @@ else:
                             left: 0;
                             top: 0;
                             width: 100%;
-                            border: 2px solid black;
-                            padding: 20px !important;
+                            border: 1px solid black;
+                            padding: 15px !important;
                             margin: 0 !important;
                         }
                         /* Reset some basic print styles */
                         body { background: white !important; }
-                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; background: white !important; }
-                        .dmc-header { text-align: center; border-bottom: 2px solid black; margin-bottom: 20px; }
-                        .dmc-header h1, .dmc-header h2, .dmc-header h3 { margin: 5px 0 !important; }
-                        .dmc-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 8px !important; text-align: left; color: black !important; }
-                        .dmc-footer { margin-top: 50px; display: flex; justify-content: space-between; }
+                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; background: white !important; font-size: 12px; }
+                        .dmc-header { text-align: center; border-bottom: 1px solid black; margin-bottom: 10px; }
+                        .dmc-header h1 { font-size: 18px; margin: 2px 0 !important; }
+                        .dmc-header h2 { font-size: 16px; margin: 2px 0 !important; }
+                        .dmc-header h3 { font-size: 14px; margin: 2px 0 !important; }
+                        .dmc-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 4px 8px !important; text-align: left; color: black !important; }
+                        .dmc-footer { margin-top: 30px; display: flex; justify-content: space-between; }
                     }
                     .print-only { display: none; }
                     </style>
                 """, unsafe_allow_html=True)
+
 
 
                 # Generate Subject Rows for Print
