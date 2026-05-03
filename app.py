@@ -233,7 +233,25 @@ else:
                 st.markdown(dmc_html, unsafe_allow_html=True)
                 
                 st.info("Tip: Click 'Print DMC' to save as PDF or Print. Ensure 'Background Graphics' is checked in print settings.")
-                if st.button("Print DMC"):
-                    st.components.v1.html("<script>window.parent.print();</script>", height=0)
+                st.info("Tip: Click the button below to Print/Save as PDF. Ensure 'Background Graphics' is checked in your browser's print settings.")
+                st.components.v1.html("""
+                    <button onclick="window.parent.print()" style="
+                        background-color: #4f46e5;
+                        border: none;
+                        color: white;
+                        padding: 12px 24px;
+                        text-align: center;
+                        text-decoration: none;
+                        display: inline-block;
+                        font-size: 16px;
+                        margin: 4px 2px;
+                        cursor: pointer;
+                        border-radius: 8px;
+                        width: 100%;
+                        font-family: 'Inter', sans-serif;
+                        font-weight: 600;
+                    ">Print DMC Certificate</button>
+                """, height=70)
+
 
 
