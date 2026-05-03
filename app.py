@@ -185,7 +185,7 @@ else:
                 for s in subjects_data:
                     subject_rows += f"<tr><td>{s['Subject']}</td><td>{s['Marks']}</td></tr>"
 
-                # Build complete standalone DMC HTML page for popup printing
+                # Build complete standalone DMC HTML page (no auto-print script)
                 popup_html = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -207,9 +207,12 @@ else:
   .summary p {{ margin: 3px 0; }}
   .footer {{ margin-top: 40px; display: flex; justify-content: space-between; text-align: center; }}
   .footer div {{ flex: 1; }}
+  .print-btn {{ display: block; margin: 20px auto; padding: 10px 30px; background: #4f46e5; color: white; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; }}
+  @media print {{ .print-btn {{ display: none; }} }}
 </style>
 </head>
 <body>
+  <button class="print-btn" onclick="window.print()">Print DMC</button>
   <div class="header">
     <h1>GHSS Adina</h1>
     <h2>Annual Examination Result 2025</h2>
@@ -237,31 +240,19 @@ else:
     <div><p>_______________________</p><p>Principal Signature</p></div>
     <div><p>_______________________</p><p>Controller of Exam</p></div>
   </div>
-  <script>window.onload = function() {{ window.print(); }}</script>
 </body>
 </html>"""
 
-                # Escape for JS string embedding
-                popup_html_escaped = popup_html.replace('\\', '\\\\').replace('`', '\\`').replace('$', '\\$')
+                # Store in session state so the print button can access it
+                st.session_state['dmc_html'] = popup_html
 
-                st.components.v1.html(f"""
-                    <button onclick="
-                        var w = window.open('', '_blank', 'width=800,height=600');
-                        w.document.write(`{popup_html_escaped}`);
-                        w.document.close();
-                    " style="
-                        background-color: #4f46e5;
-                        border: none;
-                        color: white;
-                        padding: 12px 24px;
-                        text-align: center;
-                        font-size: 16px;
-                        cursor: pointer;
-                        border-radius: 8px;
-                        width: 100%;
-                        font-family: sans-serif;
-                        font-weight: 600;
-                    ">🖨️ Print DMC Certificate</button>
-                """, height=70)
-
+                if st.button("🖨️ Print DMC Certificate", type="primary"):
+                    escaped = st.session_state['dmc_html'].replace("\\", "\\\\").replace("`", "\\`").replace("$", "\\$")
+                    st.components.v1.html(f"""
+                        <script>
+                            var w = window.open('', '_blank', 'width=900,height=700');
+                            w.document.write(`{escaped}`);
+                            w.document.close();
+                        </script>
+                    """, height=0)
 
