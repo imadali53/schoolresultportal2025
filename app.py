@@ -180,115 +180,88 @@ else:
                 with m4:
                     st.metric("Position", result.get("Position", "-"))
 
-                # Printable DMC Section
-                st.markdown("""
-                    <style>
-                    /* Global Streamlit Table Centering */
-                    [data-testid="stTable"] th, [data-testid="stTable"] td {
-                        text-align: center !important;
-                    }
-                    @media print {
-                        @page {
-                            size: A4;
-                            margin: 0;
-                        }
-                        /* Use a full-page fixed overlay for the DMC */
-                        .print-only {
-                            display: block !important;
-                            visibility: visible !important;
-                            position: fixed !important;
-                            top: 0 !important;
-                            left: 0 !important;
-                            width: 100vw !important;
-                            height: 100vh !important;
-                            background: white !important;
-                            z-index: 9999999 !important;
-                            margin: 0 !important;
-                            padding: 1.5cm !important;
-                            box-sizing: border-box !important;
-                        }
-                        .print-only * {
-                            visibility: visible !important;
-                        }
-                        /* Reset basic print styles inside the overlay */
-                        .dmc-card { font-family: 'Times New Roman', serif; color: black !important; font-size: 12px; border: 1px solid black; padding: 20px; }
-                        .dmc-header { text-align: center; border-bottom: 1px solid black; margin-bottom: 10px; }
-                        .dmc-header h1 { font-size: 18px; margin: 2px 0 !important; }
-                        .dmc-header h2 { font-size: 16px; margin: 2px 0 !important; }
-                        .dmc-header h3 { font-size: 14px; margin: 2px 0 !important; }
-                        .dmc-table { width: 70%; border-collapse: collapse; margin: 20px auto; }
-                        .dmc-table th, .dmc-table td { border: 1px solid black; padding: 4px 8px !important; text-align: center; color: black !important; }
-                        .dmc-footer { margin-top: 30px; display: flex; justify-content: space-between; }
-                    }
-                    .print-only { display: none; }
-                    </style>
-                """, unsafe_allow_html=True)
-
-
-
-
-
                 # Generate Subject Rows for Print
                 subject_rows = ""
                 for s in subjects_data:
                     subject_rows += f"<tr><td>{s['Subject']}</td><td>{s['Marks']}</td></tr>"
 
-                dmc_html = f"""
-                <div class="print-only dmc-card">
-                    <div class="dmc-header">
-                        <h1>GHSS Adina</h1>
-                        <h2>Annual Examination Result 2025</h2>
-                        <h3>Detailed Marks Certificate</h3>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-                        <p><strong>Name:</strong> {result.get('Name', '-')}</p>
-                        <p><strong>Father Name:</strong> {result.get('Father Name', '-')}</p>
-                        <p><strong>Roll Number:</strong> {result.get('Roll Number', '-')}</p>
-                        <p><strong>Class:</strong> {selected_class} {selected_section}</p>
-                        <p><strong>Admission No:</strong> {result.get('Admission Number', '-')}</p>
-                        <p><strong>Date of Birth:</strong> {result.get('Date of Birth', '-')}</p>
-                    </div>
-                    <table class="dmc-table">
-                        <thead>
-                            <tr><th>Subject</th><th>Marks Obtained</th></tr>
-                        </thead>
-                        <tbody>
-                            {subject_rows}
-                        </tbody>
-                    </table>
-                    <div style="margin-top: 20px; border: 1px solid black; padding: 10px;">
-                        <p><strong>Total Marks:</strong> {result.get('Obtained Marks', '-')}</p>
-                        <p><strong>Percentage:</strong> {pct_str}</p>
-                        <p><strong>Remarks:</strong> {result.get('Remarks', '-')}</p>
-                        <p><strong>Position:</strong> {result.get('Position', '-')}</p>
-                    </div>
-                    <div class="dmc-footer">
-                        <div style="text-align: center;"><p>_______________________</p><p>Principal Signature</p></div>
-                        <div style="text-align: center;"><p>_______________________</p><p>Controller of Exam</p></div>
-                    </div>
-                </div>
-                """
-                st.markdown(dmc_html, unsafe_allow_html=True)
-                
-                st.components.v1.html("""
-                    <button onclick="window.parent.print()" style="
+                # Build complete standalone DMC HTML page for popup printing
+                popup_html = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DMC - {result.get('Name', '')}</title>
+<style>
+  @page {{ size: A4; margin: 1cm; }}
+  body {{ font-family: 'Times New Roman', serif; font-size: 13px; margin: 0; padding: 20px; color: black; background: white; }}
+  h1 {{ font-size: 22px; margin: 4px 0; }}
+  h2 {{ font-size: 18px; margin: 4px 0; }}
+  h3 {{ font-size: 15px; margin: 4px 0; }}
+  .header {{ text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 15px; }}
+  .info-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px; }}
+  .info-grid p {{ margin: 3px 0; }}
+  table {{ width: 60%; border-collapse: collapse; margin: 15px auto; }}
+  th, td {{ border: 1px solid black; padding: 6px 12px; text-align: center; }}
+  th {{ background-color: #f0f0f0; }}
+  .summary {{ border: 1px solid black; padding: 10px; margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }}
+  .summary p {{ margin: 3px 0; }}
+  .footer {{ margin-top: 40px; display: flex; justify-content: space-between; text-align: center; }}
+  .footer div {{ flex: 1; }}
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>GHSS Adina</h1>
+    <h2>Annual Examination Result 2025</h2>
+    <h3>Detailed Marks Certificate</h3>
+  </div>
+  <div class="info-grid">
+    <p><strong>Name:</strong> {result.get('Name', '-')}</p>
+    <p><strong>Father Name:</strong> {result.get('Father Name', '-')}</p>
+    <p><strong>Roll Number:</strong> {result.get('Roll Number', '-')}</p>
+    <p><strong>Class:</strong> {selected_class} {selected_section}</p>
+    <p><strong>Admission No:</strong> {result.get('Admission Number', '-')}</p>
+    <p><strong>Date of Birth:</strong> {result.get('Date of Birth', '-')}</p>
+  </div>
+  <table>
+    <thead><tr><th>Subject</th><th>Marks Obtained</th></tr></thead>
+    <tbody>{subject_rows}</tbody>
+  </table>
+  <div class="summary">
+    <p><strong>Total Marks:</strong> {result.get('Obtained Marks', '-')}</p>
+    <p><strong>Percentage:</strong> {pct_str}</p>
+    <p><strong>Remarks:</strong> {result.get('Remarks', '-')}</p>
+    <p><strong>Position:</strong> {result.get('Position', '-')}</p>
+  </div>
+  <div class="footer">
+    <div><p>_______________________</p><p>Principal Signature</p></div>
+    <div><p>_______________________</p><p>Controller of Exam</p></div>
+  </div>
+  <script>window.onload = function() {{ window.print(); }}</script>
+</body>
+</html>"""
+
+                # Escape for JS string embedding
+                popup_html_escaped = popup_html.replace('\\', '\\\\').replace('`', '\\`').replace('$', '\\$')
+
+                st.components.v1.html(f"""
+                    <button onclick="
+                        var w = window.open('', '_blank', 'width=800,height=600');
+                        w.document.write(`{popup_html_escaped}`);
+                        w.document.close();
+                    " style="
                         background-color: #4f46e5;
                         border: none;
                         color: white;
                         padding: 12px 24px;
                         text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
                         font-size: 16px;
-                        margin: 4px 2px;
                         cursor: pointer;
                         border-radius: 8px;
                         width: 100%;
-                        font-family: 'Inter', sans-serif;
+                        font-family: sans-serif;
                         font-weight: 600;
-                    ">Print DMC Certificate</button>
+                    ">🖨️ Print DMC Certificate</button>
                 """, height=70)
-
-
 
 
