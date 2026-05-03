@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Results Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container no-print">
+        <header class="glass-header">
+            <h1>GHSS Adina Annual Results 2025</h1>
+            <p>Select your class, section, and enter your roll number to view your result.</p>
+        </header>
+
+        <main class="main-content">
+            <div class="search-card glass-card">
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="classSelect">Class</label>
+                        <select id="classSelect" required>
+                            <option value="" disabled selected>Select Class</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sectionSelect">Section</label>
+                        <select id="sectionSelect" required disabled>
+                            <option value="" disabled selected>Select Section</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rollNoInput">Roll Number</label>
+                        <input type="number" id="rollNoInput" placeholder="e.g. 1" required>
+                    </div>
+
+                    <button type="submit" class="primary-btn" id="searchBtn">
+                        <span id="btnText">Check Result</span>
+                        <span id="btnLoader" class="loader hidden"></span>
+                    </button>
+                </form>
+                <div id="errorMsg" class="error-message hidden"></div>
+            </div>
+
+            <div id="resultCard" class="result-card glass-card hidden">
+                <div class="result-header">
+                    <h2>Result Overview</h2>
+                    <button id="printBtn" class="secondary-btn">Print DMC</button>
+                </div>
+                
+                <div class="student-info-grid" id="studentInfoGrid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="marks-table-wrapper">
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marksTableBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="result-summary" id="resultSummary">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Printable DMC Layout -->
+    <div class="print-only dmc-container" id="dmcContainer">
+        <div class="dmc-header">
+            <h1>GHSS Adina</h1>
+            <h2>Annual Examination Result 2025</h2>
+            <h3>Detailed Marks Certificate</h3>
+        </div>
+        
+        <div class="dmc-student-details" id="dmcStudentDetails">
+            <!-- Populated by JS -->
+        </div>
+
+        <table class="dmc-table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Obtained Marks</th>
+                </tr>
+            </thead>
+            <tbody id="dmcMarksTableBody">
+                <!-- Populated by JS -->
+            </tbody>
+        </table>
+
+        <div class="dmc-summary" id="dmcSummary">
+            <!-- Populated by JS -->
+        </div>
+        
+        <div class="dmc-footer">
+            <div class="signature">
+                <p>_______________________</p>
+                <p>Principal Signature</p>
+            </div>
+            <div class="signature">
+                <p>_______________________</p>
+                <p>Controller of Examination</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let classData = {};
+
+        // Fetch available classes and sections on load
+        fetch('/api/options')
+            .then(res => res.json())
+            .then(data => {
+                classData = data;
+                const classSelect = document.getElementById('classSelect');
+                Object.keys(data).forEach(cls => {
+                    const option = document.createElement('option');
+                    option.value = cls;
+                    option.textContent = cls;
+                    classSelect.appendChild(option);
+                });
+            });
+
+        document.getElementById('classSelect').addEventListener('change', function() {
+            const sectionSelect = document.getElementById('sectionSelect');
+            sectionSelect.innerHTML = '<option value="" disabled selected>Select Section</option>';
+            const sections = classData[this.value] || [];
+            
+            if (sections.length > 0) {
+                sectionSelect.disabled = false;
+                sections.forEach(sec => {
+                    const option = document.createElement('option');
+                    option.value = sec;
+                    option.textContent = sec;
+                    sectionSelect.appendChild(option);
+                });
+            } else {
+                sectionSelect.disabled = true;
+            }
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const cls = document.getElementById('classSelect').value;
+            const sec = document.getElementById('sectionSelect').value;
+            const rollNo = document.getElementById('rollNoInput').value;
+            
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const errorMsg = document.getElementById('errorMsg');
+            const resultCard = document.getElementById('resultCard');
+            
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+            resultCard.classList.add('hidden');
+
+            fetch('/api/result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ class: cls, section: sec, rollNo: rollNo })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+
+                if (data.error) {
+                    errorMsg.textContent = data.error;
+                    errorMsg.classList.remove('hidden');
+                } else if (data.success) {
+                    renderResult(data.data);
+                    resultCard.classList.remove('hidden');
+                }
+            })
+            .catch(err => {
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                errorMsg.textContent = 'An error occurred while fetching the result.';
+                errorMsg.classList.remove('hidden');
+            });
+        });
+
+        function renderResult(data) {
+            // Render Student Info
+            document.getElementById('studentInfoGrid').innerHTML = `
+                <div class="info-item"><span>Name:</span> <strong>${data['Name'] || '-'}</strong></div>
+                <div class="info-item"><span>Father Name:</span> <strong>${data['Father Name'] || '-'}</strong></div>
+                <div class="info-item"><span>Roll No:</span> <strong>${data['Roll Number'] || '-'}</strong></div>
+                <div class="info-item"><span>Admission No:</span> <strong>${data['Admission Number'] || '-'}</strong></div>
+            `;
+            
+            // Render Marks Table
+            let marksHtml = '';
+            let dmcMarksHtml = '';
+            
+            const keys = Object.keys(data);
+            const nonSubjectKeys = ['Roll Number', 'Admission Number', 'Name', 'Father Name', 'Date of Birth', 'Obtained Marks', 'Per%', 'Failed Subjects', 'Below 25', 'Remarks', 'Position', 'S.No', 'Unnamed: 0'];
+            
+            keys.forEach(k => {
+                if(!nonSubjectKeys.includes(k) && data[k] !== undefined && data[k] !== "") {
+                    marksHtml += `<tr><td>${k}</td><td>${data[k]}</td></tr>`;
+                    dmcMarksHtml += `<tr><td>${k}</td><td>${data[k]}</td></tr>`;
+                }
+            });
+
+            document.getElementById('marksTableBody').innerHTML = marksHtml;
+            document.getElementById('dmcMarksTableBody').innerHTML = dmcMarksHtml;
+            
+            // Render Summary
+            const percentage = data['Per%'] ? (typeof data['Per%'] === 'string' ? parseFloat(data['Per%'].replace('%', '')) : data['Per%'] * 100).toFixed(2) + '%' : '-';
+            const remarks = data['Remarks'] || '-';
+            const isPass = String(remarks).toLowerCase() === 'pass';
+
+            const summaryHtml = `
+                <div class="summary-box">
+                    <h3>Total Marks</h3>
+                    <p class="highlight">${data['Obtained Marks'] || '-'}</p>
+                </div>
+                <div class="summary-box">
+                    <h3>Percentage</h3>
+                    <p class="highlight">${percentage}</p>
+                </div>
+                <div class="summary-box">
+                    <h3>Remarks</h3>
+                    <p class="status ${isPass ? 'pass' : 'fail'}">${remarks}</p>
+                </div>
+                <div class="summary-box">
+                    <h3>Position</h3>
+                    <p class="highlight">${data['Position'] || '-'}</p>
+                </div>
+            `;
+            document.getElementById('resultSummary').innerHTML = summaryHtml;
+            
+            // Populate DMC print section
+            document.getElementById('dmcStudentDetails').innerHTML = `
+                <div class="dmc-detail"><strong>Name:</strong> ${data['Name'] || '-'}</div>
+                <div class="dmc-detail"><strong>Father Name:</strong> ${data['Father Name'] || '-'}</div>
+                <div class="dmc-detail"><strong>Roll No:</strong> ${data['Roll Number'] || '-'}</div>
+                <div class="dmc-detail"><strong>Date of Birth:</strong> ${data['Date of Birth'] || '-'}</div>
+                <div class="dmc-detail"><strong>Class:</strong> ${document.getElementById('classSelect').value} '${document.getElementById('sectionSelect').value}'</div>
+            `;
+            
+            document.getElementById('dmcSummary').innerHTML = `
+                <div class="dmc-summary-item"><strong>Total Obtained Marks:</strong> ${data['Obtained Marks'] || '-'}</div>
+                <div class="dmc-summary-item"><strong>Percentage:</strong> ${percentage}</div>
+                <div class="dmc-summary-item"><strong>Remarks:</strong> ${remarks}</div>
+                <div class="dmc-summary-item"><strong>Position in Class:</strong> ${data['Position'] || '-'}</div>
+            `;
+        }
+
+        document.getElementById('printBtn').addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+</body>
+</html>
