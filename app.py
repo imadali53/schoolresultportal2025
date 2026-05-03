@@ -247,24 +247,17 @@ else:
                 # Store in session state so the print button can access it
                 st.session_state['dmc_html'] = popup_html
 
-                # Encode DMC as base64 data URI and open in new tab - bypasses all iframe sandbox issues
-                b64 = base64.b64encode(popup_html.encode()).decode()
-                data_uri = f"data:text/html;base64,{b64}"
+                # Download DMC as HTML file - most reliable approach in Streamlit
+                student_name = result.get('Name', 'student').replace(' ', '_')
+                st.download_button(
+                    label="🖨️ Download & Print DMC",
+                    data=popup_html,
+                    file_name=f"DMC_{student_name}.html",
+                    mime="text/html",
+                    type="primary",
+                    help="Download the DMC as an HTML file. Open it in your browser and press Ctrl+P to print."
+                )
+                st.caption("After downloading, open the file in your browser and press **Ctrl+P** to print.")
 
-                st.components.v1.html(f"""
-                    <a href="{data_uri}" target="_blank" style="
-                        display: block;
-                        background-color: #4f46e5;
-                        color: white;
-                        padding: 12px 24px;
-                        text-align: center;
-                        font-size: 16px;
-                        border-radius: 8px;
-                        text-decoration: none;
-                        font-family: sans-serif;
-                        font-weight: 600;
-                        margin-top: 8px;
-                    ">🖨️ Open & Print DMC Certificate</a>
-                """, height=60)
 
 
