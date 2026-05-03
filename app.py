@@ -144,10 +144,8 @@ else:
                 is_pass = str(result.get("Remarks", "")).lower() == "pass"
 
                 if is_pass:
-                    st.balloons()
                     st.success("Congratulations! You have passed. 🎓")
                 else:
-                    st.snow()
                     st.error("Keep trying! Success is just around the corner. 📚")
 
                 with m1:
@@ -193,7 +191,7 @@ else:
                 for s in subjects_data:
                     subject_rows += f"<tr><td>{s['Subject']}</td><td>{s['Marks']}</td></tr>"
 
-                dmc_html = f"""
+                dmc_html = f\"\"\"
                 <div class="print-only dmc-card">
                     <div class="dmc-header">
                         <h1>GHSS Adina</h1>
@@ -231,10 +229,11 @@ else:
                         <div style="text-align: center;"><p>_______________________</p><p>Controller of Exam</p></div>
                     </div>
                 </div>
-                """
+                \"\"\"
                 st.markdown(dmc_html, unsafe_allow_html=True)
                 
                 st.info("Tip: Click 'Print DMC' to save as PDF or Print. Ensure 'Background Graphics' is checked in print settings.")
                 if st.button("Print DMC"):
-                    st.components.v1.html("<script>window.print();</script>", height=0)
+                    st.components.v1.html("<script>window.parent.print();</script>", height=0)
+
 
